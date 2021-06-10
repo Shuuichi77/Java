@@ -75,8 +75,10 @@ public final class Noun extends Word {
 		switch (canBePushed(board, direction, nounsToRemove)) {
 		case -1:
 			return false;
+			break;
 		case 1:
 			hasBeenPushed = true;
+			break;
 		}
 		
 		/* If noun hasn't been pushed, we check if it has the next properties
@@ -103,11 +105,7 @@ public final class Noun extends Word {
 	private boolean isStop(PropertyMap propertyMap) {
 		Objects.requireNonNull(propertyMap);
 		
-		if (this.isProperty(propertyMap, PropertyName.STOP)) {
-			return true;
-		}
-		
-		return false;
+		return this.isProperty(propertyMap, PropertyName.STOP);
 	}
 	
 	/**
@@ -173,11 +171,10 @@ public final class Noun extends Word {
 		Objects.requireNonNull(prevWord);
 		Objects.requireNonNull(board);
 		
-		if (board.nounMap().isYou(prevWord.wordName())) {
-			if (this.isProperty(board.propertyMap(), PropertyName.POISON)) {
-				// If prevWord is a Noun, we add it in nounsToRemove, EVEN IF IT'S ALREADY IN !
-				board.hasBeenPoisoned();
-			}
+		if (board.nounMap().isYou(prevWord.wordName()) && this.isProperty(board.propertyMap(), PropertyName.POISON)) {
+			// If prevWord is a Noun, we add it in nounsToRemove, EVEN IF IT'S ALREADY IN !
+			board.hasBeenPoisoned();
+			
 		}
 	}
 	
@@ -270,10 +267,8 @@ public final class Noun extends Word {
 		Objects.requireNonNull(prevWord);
 		Objects.requireNonNull(board);
 		
-		if (board.nounMap().isYou(prevWord.wordName())) {
-			if (board.isNextNounWin(this)) {
-				return ;
-			}
+		if (board.nounMap().isYou(prevWord.wordName()) && board.isNextNounWin(this)) {
+			return ;
 		}
 	}
 	
@@ -290,12 +285,11 @@ public final class Noun extends Word {
 		Objects.requireNonNull(board);
 		
 		
-		if (board.nounMap().isYou(prevWord.wordName())) {
-			if (this.isProperty(board.propertyMap(), PropertyName.DEFEAT)) {
-				// If prevWord is a Noun, we add it in nounsToRemove, EVEN IF IT'S ALREADY IN !
-				if (prevWord instanceof Noun) {
-					nounsToRemove.add((Noun) prevWord);
-				}
+		if (board.nounMap().isYou(prevWord.wordName()) &&
+				this.isProperty(board.propertyMap(), PropertyName.DEFEAT) &&
+				prevWord instanceof Noun) {
+			// If prevWord is a Noun, we add it in nounsToRemove, EVEN IF IT'S ALREADY IN !
+			nounsToRemove.add((Noun) prevWord);
 			}
 		}
 	}	
